@@ -2,6 +2,12 @@ var mysql = require('mysql');
 
 var inquirer = require('inquirer');
 
+var retrieveQuery = 'SELECT ItemID, ProductName, Price, StockQuantity FROM Products';
+
+var store; // will hold DB object for global use
+
+var userInput; // will hold the object that is returned after user input (inquirer)
+
 var connection = mysql.createConnection({
 
 	host: 'localhost',
@@ -11,14 +17,20 @@ var connection = mysql.createConnection({
 	database: 'Bamazon'
 
 });
+// makes a connection with the mysql DB
+connection.connect(function(err){
+	if(err) throw err;
 
-//connection.connect(function(err){
+});
+// retrieves data from DB to be displayed to customer
+connection.query(retrieveQuery, function(err, data){
 
-//	if(err) throw err;
+	store = data
+	console.log(store);
 
+});
 
-//});
-
+// questions used to gather user inputs.
 var questions = [
 {
 	type: 'input',
@@ -37,12 +49,10 @@ var questions = [
 	message: 'How many would you like?',
 }
 
-]
-
-
+];
+// calls inquirer to start question prompts
 inquirer.prompt(questions).then(function(answers){
-	//var userInput = JSON.stringify(answers, null, '  ');
-	console.log(answers.product);
+	userInput = answers; // stored in global variable for use later in program.
 })
 
 
