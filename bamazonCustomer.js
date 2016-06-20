@@ -8,6 +8,8 @@ var store; // will hold DB object for global use
 
 var userInput; // will hold the object that is returned after user input (inquirer)
 
+
+
 var connection = mysql.createConnection({
 
 	host: 'localhost',
@@ -17,18 +19,30 @@ var connection = mysql.createConnection({
 	database: 'Bamazon'
 
 });
-// makes a connection with the mysql DB
-connection.connect(function(err){
-	if(err) throw err;
 
-});
-// retrieves data from DB to be displayed to customer
-connection.query(retrieveQuery, function(err, data){
 
-	store = data
-	console.log(store);
+		
+	var connectPromise = new Promise(function(resolve, reject){
+		// makes a connection with the mysql DB
+		connection.connect(function(err){
+			if(err) throw err;
+			console.log('db connected before questions show up')
+			resolve();
+		});
 
-});
+	});
+
+
+	// retrieves data from DB to be displayed to customer
+//	connection.query(retrieveQuery, function(err, data){
+
+//		store = data;
+
+//	});
+
+
+
+var startPrompt = function() {
 
 // questions used to gather user inputs.
 var questions = [
@@ -50,15 +64,43 @@ var questions = [
 }
 
 ];
+
 // calls inquirer to start question prompts
-inquirer.prompt(questions).then(function(answers){
-	userInput = answers; // stored in global variable for use later in program.
+	connectPromise.then(function(){
+		inquirer.prompt(questions).then(function(answers){
+			userInput = answers; // stored in global variable for use later in program.
+		});
+	},function(){
+ 	// err will be thrown and execution will stop before this reject function ever executes.
 })
 
+};
+
+startPrompt();
+
+
+
+
+connection.end();
 
 
 
 
 
 
-//connection.end();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
