@@ -21,8 +21,8 @@ var connection = mysql.createConnection({
 });
 
 
-		
-	var connectPromise = new Promise(function(resolve, reject){
+// Promise used so that database is connected before inquirer prompts the user for a seamless expirence.
+	var connectPromise = new Promise(function(resolve, reject){ 
 		// makes a connection with the mysql DB
 		connection.connect(function(err){
 			if(err) throw err;
@@ -76,8 +76,9 @@ var questions = [
 
 ];
 
-// calls inquirer to start question prompts
+// code within only executes once promise is fullfilled. 
 connectPromise.then(function(){
+	// calls inquirer to start question prompts
 		inquirer.prompt(questions).then(function(answers){
 			userInput = answers; // stored in global variable for use later in program.
 			quantityCheck(answers);
@@ -87,12 +88,12 @@ connectPromise.then(function(){
 });
 
 };
-
+// function that makes certain there is enough products to sell.
 var quantityCheck = function(userInput){
 	var theItem;
 	var quanRequest = userInput.quantity;
 	var itemRequest = userInput.product;
-
+// checks each item from the data base for item number
 	for(var i = 0; i < store.length; i++){
 		if(itemRequest == store[i].ItemID){
 			theItem = store[i];
@@ -104,7 +105,7 @@ var quantityCheck = function(userInput){
 	if(quanRequest > theItem.StockQuantity){
 		console.log('The quantity you requested is more than we have in stock!');
 	}
-	else if(quanRequest <= theItem.StockQuantity){
+	else if(quanRequest <= theItem.StockQuantity){ // prints receipt then updates data base with new total below.
 		var total = quanRequest * theItem.Price;
 		console.log('=====Your Receipt=====');
 		console.log('Product Name: ' + theItem.ProductName);
@@ -125,5 +126,4 @@ var quantityCheck = function(userInput){
 
 };
 
-startPrompt();
-
+startPrompt(); // intial function call.
