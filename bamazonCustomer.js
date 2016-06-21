@@ -108,42 +108,22 @@ var quantityCheck = function(userInput){
 		var total = quanRequest * theItem.Price;
 		console.log('=====Your Receipt=====');
 		console.log('Product Name: ' + theItem.ProductName);
-		console.log('Unit Price: ' + theItem.Price)
+		console.log('Unit Price: $' + theItem.Price)
 		console.log('Quantity: ' + quanRequest);
-		console.log('Total: ' + total);
+		console.log('Total: $' + total);
 		console.log('Thank You for shopping at Bamazon!');
+
+		var newQuan =  theItem.StockQuantity - quanRequest;
+		var updateQuery = String('UPDATE Products SET StockQuantity = ' + newQuan + ' WHERE ItemID = ' + itemRequest);
+		connection.query(updateQuery);
+		console.log('Transaction Successful!');
+		connection.end();
+			
+		
 	}
 
 
 };
 
 startPrompt();
-
-
-
-
-
-
-connection.end();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
