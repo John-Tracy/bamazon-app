@@ -26,20 +26,31 @@ var connection = mysql.createConnection({
 		// makes a connection with the mysql DB
 		connection.connect(function(err){
 			if(err) throw err;
-			console.log('db connected before questions show up')
-			resolve();
+	
+		});
+		connection.query(retrieveQuery, function(err, data){
+			store = data;
+			var ii = false;
+			for(var i = 0; i < data.length; i++){
+
+				console.log('--------------------');
+				console.log('Product #: ' + data[i].ItemID);
+				console.log('Name :' + data[i].ProductName);
+				console.log('Price: $' + data[i].Price);
+				console.log('Quantity: ' + data[i].StockQuantity);
+
+				if(i == (data.length - 1)){
+					ii = true;
+				}
+
+			}
+				if(ii == true){
+					resolve();
+				}
+
 		});
 
 	});
-
-
-	// retrieves data from DB to be displayed to customer
-//	connection.query(retrieveQuery, function(err, data){
-
-//		store = data;
-
-//	});
-
 
 
 var startPrompt = function() {
@@ -77,9 +88,6 @@ var questions = [
 };
 
 startPrompt();
-
-
-
 
 connection.end();
 
