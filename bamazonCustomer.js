@@ -34,7 +34,7 @@ var connection = mysql.createConnection({
 			for(var i = 0; i < data.length; i++){
 
 				console.log('--------------------');
-				console.log('Product #: ' + data[i].ItemID);
+				console.log('Product ID#: ' + data[i].ItemID);
 				console.log('Name :' + data[i].ProductName);
 				console.log('Price: $' + data[i].Price);
 				console.log('Quantity: ' + data[i].StockQuantity);
@@ -62,10 +62,10 @@ var questions = [
 	name: 'product',
 	message: 'Type in the ID number of the product you want to buy:',
 	validate: function(value){
-		if(value >= 1 && value <= 10){
+		if(value >= 1 && value <= store.length){
 			return true;
 		}
-		return 'Please enter a valid Product ID';
+		return false;
 	}
 },
 {
@@ -77,17 +77,52 @@ var questions = [
 ];
 
 // calls inquirer to start question prompts
-	connectPromise.then(function(){
+connectPromise.then(function(){
 		inquirer.prompt(questions).then(function(answers){
 			userInput = answers; // stored in global variable for use later in program.
+			quantityCheck(answers);
 		});
 	},function(){
  	// err will be thrown and execution will stop before this reject function ever executes.
-})
+});
+
+};
+
+var quantityCheck = function(userInput){
+	var theItem;
+	var quanRequest = userInput.quantity;
+	var itemRequest = userInput.product;
+
+	for(var i = 0; i < store.length; i++){
+		if(itemRequest == store[i].ItemID){
+			theItem = store[i];
+			break;
+		}
+	}
+
+
+	if(quanRequest > theItem.StockQuantity){
+		console.log('The quantity you requested is more than we have in stock!');
+	}
+	else if(quanRequest <= theItem.StockQuantity){
+		var total = quanRequest * theItem.Price;
+		console.log('=====Your Receipt=====');
+		console.log('Product Name: ' + theItem.ProductName);
+		console.log('Unit Price: ' + theItem.Price)
+		console.log('Quantity: ' + quanRequest);
+		console.log('Total: ' + total);
+		console.log('Thank You for shopping at Bamazon!');
+	}
+
 
 };
 
 startPrompt();
+
+
+
+
+
 
 connection.end();
 
