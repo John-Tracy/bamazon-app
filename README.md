@@ -12,3 +12,11 @@ Simulated e-commerce storefront using mySQL and node.js.
 ![](/images/cust4.png)
 
 ![](/images/cust5.png)
+
+### Manager View
+
+![](/images/manager1.png)
+
+![](/images/manager2.png)
+
+![](/images/manger3.png)
