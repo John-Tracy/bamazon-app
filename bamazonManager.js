@@ -49,12 +49,12 @@ var direct = {
 				console.log('Product ID#: ' + data[i].ItemID);
 				console.log('Name :' + data[i].ProductName);
 				console.log('Quantity: ' + data[i].StockQuantity);
-			}
 			promptList();
+			}
 		});
 	},
 
-	optThreeThen: function(){
+	optThree: function(){
 
 			inquirer.prompt([
 					{
@@ -62,9 +62,15 @@ var direct = {
 						name: 'idNum',
 						message: 'Please put in the Product ID#',
 						validate: function(value){
-							if(value <= data.length){
-								return true;
-							}
+							connection.query(direct.viewQuery, function(err, data){
+								if(value <= data.length){
+									return true;
+								}
+								else{
+									console.log('invalid ID...');
+									promptList();
+								}
+							});
 						}
 					},
 					{
@@ -77,19 +83,52 @@ var direct = {
 					var id = input.idNum;
 					var newQuantity;
 					var selectQuery = 'SELECT StockQuantity FROM Products WHERE ItemID = ' + id;
-					var letIt = false;
+					
 					
 					connection.query(selectQuery, function(err, data){
+						
 						newQuantity = parseInt(data[0].StockQuantity) + parseInt(input.amount);
-						letIt = true;
-					});
-					if(letIt == true){
-						console.log('does this even work?')
-						var updateQuery = String('UPDATE Products SET StockQuantity = ' + newQuantity + ' WHERE ItemID = ' + id);
-						connection.query(updateQuery);
+						connection.query('UPDATE Products SET StockQuantity = ' + newQuantity + ' WHERE ItemID = ' + id);
 						promptList();
-					}
-			})
+					});
+					
+						
+					
+						
+					
+			});
+	},  					// INSERT INTO Products (ProductName, DepartmentName, Price, StockQuantity)
+	addNew: function(){
+		inquirer.prompt([
+				{
+					type: 'input',
+					name: 'productName',
+					message: 'Enter Product Name: '
+				},
+				{
+					type: 'input',
+					name: 'departmentName',
+					message: 'Enter Department Name: '
+				},
+				{
+					type: 'input',
+					name: 'price',
+					message: 'Enter the Products Price: (numbers only)'
+				},
+				{
+					type: 'input',
+					name: 'stock',
+					message: 'Enter the Stock amount'
+				}
+			]).then(function(input){
+				var intialquery = 'INSERT INTO Products (ProductName, DepartmentName, Price, StockQuantity) ';
+				var name = '"' + input.productName + '"' + ', ';
+				var department = '"' + input.departmentName + '"' + ', ';
+				var price =  input.price + ', ';
+				var stock = input.stock;
+				connection.query(intialquery + 'VALUES(' + name + department + price + stock + ')');
+				promptList();
+			});
 	}
 
 
@@ -152,13 +191,11 @@ var promptList = function(){
 					break;
 
 				case 'Add to Inventory':
-					optThree.then(direct.optThreeThen() ,function(){
-
-					});
+					direct.optThree();
 					break;
 
 				case 'Add New Product':
-					console.log('case 4 worked');
+					direct.addNew();
 					break;
 
 			}
