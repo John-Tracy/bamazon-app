@@ -28,3 +28,9 @@ Simulated e-commerce storefront using mySQL and node.js.
 ![](/images/manager6.png)
 
 ### Executive View
+
+![](/images/exec1.png)
+
+![](/images/exec2.png)
+
+![](/images/exec3.png)
