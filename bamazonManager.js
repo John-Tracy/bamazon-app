@@ -61,17 +61,17 @@ var direct = {
 						type: 'input',
 						name: 'idNum',
 						message: 'Please put in the Product ID#',
-						//validate: function(value){
-						//	connection.query(direct.viewQuery, function(err, data){
-						//		if(value <= data.length){
-						//			return true;
-						//		}
-						//		else{
-						//			console.log('invalid ID...');
-						//			promptList();
-						//		}
-						//	});
-						//}
+						validate: function(value){
+							connection.query(direct.viewQuery, function(err, data){
+								if(value <= data.length){
+									return true;
+								}
+								else{
+									console.log('invalid ID...');
+									promptList();
+								}
+							});
+						}
 					},
 					{
 						type: 'input',

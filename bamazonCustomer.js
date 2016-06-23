@@ -2,7 +2,7 @@ var mysql = require('mysql');
 
 var inquirer = require('inquirer');
 
-var retrieveQuery = 'SELECT ItemID, ProductName, Price, StockQuantity FROM Products';
+var retrieveQuery = 'SELECT * FROM Products';
 
 var store; // will hold DB object for global use
 
@@ -115,6 +115,7 @@ var quantityCheck = function(userInput){
 		console.log('Thank You for shopping at Bamazon!');
 
 		var newQuan =  theItem.StockQuantity - quanRequest;
+		connection.query('UPDATE Departments SET TotalSales = TotalSales + ' + total + ' WHERE DepartmentName = "' + theItem.DepartmentName + '"');
 		var updateQuery = String('UPDATE Products SET StockQuantity = ' + newQuan + ' WHERE ItemID = ' + itemRequest);
 		connection.query(updateQuery);
 		console.log('Transaction Successful!');
