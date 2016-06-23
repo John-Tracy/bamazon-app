@@ -33,6 +33,25 @@ var questions = [
 	}
 ];
 
+var createDep = [
+	{
+		type: 'input',
+		name: 'name',
+		message: 'Enter Department Name: '
+
+	},
+	{
+		type: 'input',
+		name: 'overhead',
+		message: 'Enter Estimate Overhead Costs: '
+	},
+	{
+		type: 'input',
+		name: 'sales',
+		message: 'Enter Any Sales so far: '
+	}
+];
+
 var overView = function(){
 
 	connection.query('SELECT * FROM Departments', function(err, data){
@@ -41,15 +60,28 @@ var overView = function(){
 			data[i]['profit'] = data[i].TotalSales - data[i].OverHeadCosts;
 			if(i == data.length - 1){
 				console.table(data);
+				homePrompt();
 			}
 		}
 	});
 };
 
+var createNew = function(){
+
+	inquirer.prompt(createDep).then(function(input){
+		var theQuery = 'INSERT INTO Departments (DepartmentName, OverHeadCosts, TotalSales) VALUES("' + input.name + '",' + input.overhead + ',' + input.sales + ')';
+		connection.query(theQuery);
+		console.table([input]);
+		console.log('Successfully added to DataBase');
+		homePrompt();
+	});
+
+};
 
 
 
 
+var homePrompt = function(){
 
 inquirer.prompt(questions).then(function(input){
 
@@ -58,8 +90,11 @@ inquirer.prompt(questions).then(function(input){
 		overView();
 		break;
 		case 'Create New Department':
-		console.log('create new worked');
+		createNew();
 		break;
 	}
 
 });
+
+};
+homePrompt();
